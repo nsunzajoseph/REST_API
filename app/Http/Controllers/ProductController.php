@@ -40,11 +40,8 @@ class ProductController extends Controller
             $product = Product::create([
                 ...$request->all()
             ]);
-            // $product = Product::create([
-            //     'name' => $request->name
-            //     'description' => $request->description
-            // ]);
             return ProductResource::make($product);
+            
         } catch (\Throwable $error) {
             return response()->json(['message' => $error->getMessage()], 500);
         }
@@ -55,7 +52,16 @@ class ProductController extends Controller
     */
     public function show(string $id)
     {
-        //
+        try{
+            $product = Product::find($id);
+            if(!$product){
+                return response()->json(['message'=>'Sorry! No data Found, please try another id']);
+            }
+            return $product;
+        }catch(\throw $error){
+            return response()->json(['error'=>$error->getMessage()],500);
+        }
+       
     }
 
     /**
@@ -63,7 +69,27 @@ class ProductController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        //update data into the database
+        try{
+            $editprodct = Product::find($id);
+            if(!$editprodct){
+                return response()->json(['message'=>'No data found with this id, please try another Id']);
+            }
+            $validit = Validator::make($request->all(),[
+                'name'=>'required|min:3|max:255',
+                'description'=>'required|min:3|max:255'
+            ]);
+            if($validit->fails())
+            {
+                return response()->json(['error'=>$validit->errors()->all()],422);
+            }
+            $editprodct->update($request->all());
+            return response()->json(['success'=>'Data updated successfully']);
+            return ProductResource::make($editprodct);
+
+        }catch(\throw $error){
+            return response()->json(['error'=>$error->getMessage()],500);
+        }
     }
 
     /**
@@ -71,6 +97,17 @@ class ProductController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        //delete data from the database
+        try{
+            $deletd = Product::find($id);
+            if(!$deletd){
+                return response()->json(['message'=>'Sorry! No data Found, please try another id']);
+            }
+            $deletd->delete();
+            return response()->json(['message'=>'Data deleted Successfully']);
+        }
+        catch(\throw $error){
+            return response()->json(['error'=>$error->getMessage()],500);
+        }
     }
 }

@@ -4,8 +4,10 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\Product;
+use App\Models\Category;
 use Illuminate\Database\Seeder;
 use Database\Seeders\ProductSeeder;
+use Database\Seeders\CategorySeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -23,8 +25,9 @@ class DatabaseSeeder extends Seeder
 
         // call factory
         Product::factory(50)->create();
-
+        Category::factory(10)->create();
         //seeder
-        $this->call(ProductSeeder::class);
+       $this->call(ProductSeeder::class);
+       $this->call(CategorySeeder::class);
     }
 }
